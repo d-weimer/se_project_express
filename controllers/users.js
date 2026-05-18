@@ -1,11 +1,20 @@
 const User = require("../models/user.js");
+const {
+  SUCCESS_CODE,
+  CREATED_CODE,
+  BAD_REQUEST_ERROR,
+  NOT_FOUND_ERROR,
+  DEFAULT_SERVER_ERROR,
+} = require("../utils/errors.js");
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.status(SUCCESS_CODE).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(DEFAULT_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -13,13 +22,15 @@ const createUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(CREATED_CODE).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(BAD_REQUEST_ERROR).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(DEFAULT_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -28,16 +39,20 @@ const getUser = (req, res) => {
 
   User.findById(userId)
     .orFail()
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(SUCCESS_CODE).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
+        return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
       }
       if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST_ERROR)
+          .send({ message: "Invalid user ID format" });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(DEFAULT_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 

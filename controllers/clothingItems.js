@@ -57,4 +57,54 @@ const deleteItem = (req, res) => {
     });
 };
 
-module.exports = { getItems, createItem, deleteItem };
+const likeItem = (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user._id;
+
+  Item.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: userId } },
+    { new: true }
+  )
+    .orFail()
+    .then((item) => res.status(SUCCESS_CODE).send(item))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_ERROR)
+          .send({ message: "Invalid item ID format" });
+      }
+      return res
+        .status(DEFAULT_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
+
+const dislikeItem = (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user._id;
+
+  Item.findByIdAndUpdate(itemId, { $pull: { likes: userId } }, { new: true })
+    .orFail()
+    .then((item) => res.status(SUCCESS_CODE).send(item))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_ERROR)
+          .send({ message: "Invalid item ID format" });
+      }
+      return res
+        .status(DEFAULT_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
+
+module.exports = { getItems, createItem, deleteItem, likeItem, dislikeItem };

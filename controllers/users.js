@@ -57,21 +57,22 @@ const createUser = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.params;
+const getCurrentUser = (req, res) => {
+  const userId = req.user._id;
 
-  User.findById(userId)
-    .orFail()
-    .then((user) => res.status(SUCCESS_CODE).send(user))
+  return User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(NOT_FOUND_ERROR).send({ message: "User not found." });
+      }
+      return res.status(SUCCESS_CODE).send(user);
+    })
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
-      }
       if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST_ERROR)
-          .send({ message: "Invalid user ID format" });
+          .send({ message: "Invalid user ID format." });
       }
       return res
         .status(DEFAULT_SERVER_ERROR)
@@ -108,4 +109,4 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login };
+module.exports = { getUsers, createUser, getCurrentUser, login };

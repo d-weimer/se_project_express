@@ -39,22 +39,18 @@ const createUser = (req, res) => {
     .then((user) => {
       const userResponse = user.toObject();
       delete userResponse.password;
-
       res.status(CREATED_CODE).send(userResponse);
     })
     .catch((err) => {
       console.error(err);
-
       if (err.code === 11000) {
         return res
           .status(CONFLICT_ERROR)
           .send({ message: "A user with this email already exists." });
       }
-
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST_ERROR).send({ message: err.message });
       }
-
       return res
         .status(DEFAULT_SERVER_ERROR)
         .send({ message: "An error has occurred on the server." });
@@ -83,7 +79,7 @@ const getUser = (req, res) => {
     });
 };
 
-const loginUser = (req, res) => {
+const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -92,27 +88,24 @@ const loginUser = (req, res) => {
       .send({ message: "Email and password are required." });
   }
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-
-      res.status(SUCCESS_CODE).send({ token });
+      return res.status(SUCCESS_CODE).send({ token });
     })
     .catch((err) => {
       console.error(err);
-
       if (err.message === "Incorrect email or password") {
         return res
           .status(UNAUTHORIZED_ERROR)
           .send({ message: "Incorrect email or password." });
       }
-
       return res
         .status(DEFAULT_SERVER_ERROR)
         .send({ message: "An error has occurred on the server." });
     });
 };
 
-module.exports = { getUsers, createUser, getUser, loginUser };
+module.exports = { getUsers, createUser, getUser, login };

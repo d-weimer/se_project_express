@@ -3,6 +3,7 @@ const {
   SUCCESS_CODE,
   CREATED_CODE,
   BAD_REQUEST_ERROR,
+  FORBIDDEN_ERROR,
   NOT_FOUND_ERROR,
   DEFAULT_SERVER_ERROR,
 } = require("../utils/errors");
@@ -37,10 +38,20 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  const userId = req.user._id;
 
-  Item.findByIdAndDelete(itemId)
+  return Item.findById(itemId)
     .orFail()
-    .then((item) => res.status(SUCCESS_CODE).send(item))
+    .then((item) => {
+      if (!item.owner.equals(userId)) {
+        return res
+          .status(FORBIDDEN_ERROR)
+          .send({ message: "You are not authorized to delete this item." });
+      }
+      return Item.findByIdAndDelete(itemId)
+        .orFail()
+        .then((deletedItem) => res.status(SUCCESS_CODE).send(deletedItem));
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {

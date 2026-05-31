@@ -1,9 +1,12 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const {
   SUCCESS_CODE,
   CREATED_CODE,
   BAD_REQUEST_ERROR,
+  UNAUTHORIZED_ERROR,
   NOT_FOUND_ERROR,
+  CONFLICT_ERROR,
   DEFAULT_SERVER_ERROR,
 } = require("../utils/errors");
 
@@ -19,15 +22,37 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
-    .then((user) => res.status(CREATED_CODE).send(user))
+  bcrypt
+    .hash(password, 10)
+    .then((hashedPassword) => {
+      return User.create({
+        name,
+        avatar,
+        email,
+        password: hashedPassword,
+      });
+    })
+    .then((user) => {
+      const userResponse = user.toObject();
+      delete userResponse.password;
+
+      res.status(CREATED_CODE).send(userResponse);
+    })
     .catch((err) => {
       console.error(err);
+
+      if (err.code === 11000) {
+        return res
+          .status(CONFLICT_ERROR)
+          .send({ message: "A user with this email already exists." });
+      }
+
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST_ERROR).send({ message: err.message });
       }
+
       return res
         .status(DEFAULT_SERVER_ERROR)
         .send({ message: "An error has occurred on the server." });

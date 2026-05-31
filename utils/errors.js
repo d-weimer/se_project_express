@@ -3,6 +3,7 @@ const CREATED_CODE = 201;
 
 const BAD_REQUEST_ERROR = 400;
 const NOT_FOUND_ERROR = 404;
+const CONFLICT_ERROR = 409;
 const DEFAULT_SERVER_ERROR = 500;
 
 module.exports = {
@@ -10,5 +11,6 @@ module.exports = {
   CREATED_CODE,
   BAD_REQUEST_ERROR,
   NOT_FOUND_ERROR,
+  CONFLICT_ERROR,
   DEFAULT_SERVER_ERROR,
 };

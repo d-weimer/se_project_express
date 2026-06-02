@@ -12,17 +12,6 @@ const {
   DEFAULT_SERVER_ERROR,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.status(SUCCESS_CODE).send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(DEFAULT_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -141,7 +130,6 @@ const updateCurrentUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   login,

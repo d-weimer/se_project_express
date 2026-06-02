@@ -37,10 +37,10 @@ const createItem = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
   const userId = req.user._id;
 
-  return Item.findById(itemId)
+  return Item.findById(id)
     .orFail()
     .then((item) => {
       if (!item.owner.equals(userId)) {
@@ -48,7 +48,7 @@ const deleteItem = (req, res) => {
           .status(FORBIDDEN_ERROR)
           .send({ message: "You are not authorized to delete this item." });
       }
-      return Item.findByIdAndDelete(itemId)
+      return Item.findByIdAndDelete(id)
         .orFail()
         .then((deletedItem) => res.status(SUCCESS_CODE).send(deletedItem));
     })
@@ -69,14 +69,10 @@ const deleteItem = (req, res) => {
 };
 
 const likeItem = (req, res) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
   const userId = req.user._id;
 
-  Item.findByIdAndUpdate(
-    itemId,
-    { $addToSet: { likes: userId } },
-    { new: true }
-  )
+  Item.findByIdAndUpdate(id, { $addToSet: { likes: userId } }, { new: true })
     .orFail()
     .then((item) => res.status(SUCCESS_CODE).send(item))
     .catch((err) => {
@@ -96,10 +92,10 @@ const likeItem = (req, res) => {
 };
 
 const dislikeItem = (req, res) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
   const userId = req.user._id;
 
-  Item.findByIdAndUpdate(itemId, { $pull: { likes: userId } }, { new: true })
+  Item.findByIdAndUpdate(id, { $pull: { likes: userId } }, { new: true })
     .orFail()
     .then((item) => res.status(SUCCESS_CODE).send(item))
     .catch((err) => {

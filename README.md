@@ -42,3 +42,8 @@ Postman was used to test and verify that all server functionality works as expec
    - **Users:** `POST /users` (Create User), `GET /users` (Get All Users), `GET /users/:userId` (Get Specific User)
    - **Items:** `POST /items` (Create Item), `GET /items` (Get All Items), `DELETE /items/:itemId` (Delete Item)
    - **Likes:** `PUT /items/:itemId/likes` (Like Item), `DELETE /items/:itemId/likes` (Unlike Item)
+
+## Project Pitch Video
+
+Check out [this video](https://drive.google.com/file/d/1S8GxUeEUwupjJ5eGK4K6oPrhHaKEF6yj/view?usp=sharing), where I describe my
+project and some challenges I faced while building it.

@@ -1,8 +1,14 @@
-# WTWR (What to Wear?): Back End
+# WTWR (What to Wear?): Backend
 
 The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
 
+The server deployment phase was focused on configuring a remote production environment for the WTWR application. I gain a deeper understanding of how to provision cloud infrastructure, manage background application layers, and secure web traffic using modern DevOps practices.
+
+https://www.djw-wtwr.jumpingcrab.com
+
 ## Technologies and Techniques Used
+
+**Backend development:**
 
 - **Node.js & Express:** Used to set up the server and create routes to separate endpoint paths from the controller logic.
 - **Postman:** Used to test all the API endpoints, mock frontend request data, and make sure custom HTTP error status codes are working properly.
@@ -10,6 +16,18 @@ The back-end project is focused on creating a server for the WTWR application. Y
 - **Validator:** A library integrated into the Mongoose schemas to validate web image URLs for both the user avatar and clothing item images.
 - **ESLint:** Used to catch code errors early and enforce a clean and consistent coding style across the project.
 - **Nodemon:** Added as a development dependency to automatically restart the server whenever code changes are saved.
+
+**Server deployment:**
+
+- **Google Cloud Platform (GCP):** Used to provision and configure the remote Virtual Machine (VM) infrastructure for hosting the application.
+- **Ubuntu (24.04 LTS Minimal):** A lightweight Linux operating system selected for the VM environment to keep server resource utilization optimized.
+- **SSH (Secure Shell):** Used to securely connect to and execute command-line instructions on the remote server's terminal from your local machine.
+- **Git & GitHub:** Used to clone the backend source code repository directly onto the cloud server using secure HTTPS access.
+- **Nginx:** A high-performance web server configured as a reverse proxy to route public domain requests to internal application ports and securely serve the static frontend files.
+- **PM2:** A production-grade process manager used to daemonize the Node.js application so that it runs continuously in the background and frees up the terminal panel.
+- **Certbot & Let's Encrypt:** Automated security tools used to generate, configure, and manage SSL/TLS certificates to enforce secure HTTPS traffic for your domains.
+- **UFW (Uncomplicated Firewall):** A built-in Linux firewall used to manage network access and control which local ports are exposed to public traffic.
+- **cURL:** A command-line utility used locally to manually test network connectivity, verify API route endpoints, and confirm successful deployment configurations.
 
 ## API Functionality Overview
 
@@ -43,7 +61,14 @@ Postman was used to test and verify that all server functionality works as expec
    - **Items:** `POST /items` (Create Item), `GET /items` (Get All Items), `DELETE /items/:itemId` (Delete Item)
    - **Likes:** `PUT /items/:itemId/likes` (Like Item), `DELETE /items/:itemId/likes` (Unlike Item)
 
-## Project Pitch Video
+## Frontend GitHub Repository
 
-Check out [this video](https://drive.google.com/file/d/1S8GxUeEUwupjJ5eGK4K6oPrhHaKEF6yj/view?usp=sharing), where I describe my
-project and some challenges I faced while building it.
+[WTWR Frontend](https://github.com/d-weimer/se_project_react)
+
+## Project Pitch Videos
+
+Check out these videos, where I describe my project
+and some challenges I faced while building it:
+
+- [DanielWeimer-ProjectPitch-Project13](https://drive.google.com/file/d/1S8GxUeEUwupjJ5eGK4K6oPrhHaKEF6yj/view?usp=sharing)
+- [DanielWeimer-ProjectPitch-Project15](https://drive.google.com/file/d/1CElSEOwM5gF8lFTriVD0ztek5EXnh0gm/view?usp=sharing)

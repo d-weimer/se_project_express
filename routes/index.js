@@ -10,9 +10,14 @@ const {
 } = require("../middlewares/validation");
 const NotFoundError = require("../errors/not-found-error");
 
+router.use((req, res, next) => {
+  console.log("--> REQUEST PATH:", req.originalUrl, "METHOD:", req.method);
+  next();
+});
+
 router.post("/signin", validateAuthentication, login);
 router.post("/signup", validateUserBody, createUser);
-router.use("/items", itemRouter);
+router.use(["/items", "/items/"], itemRouter);
 
 router.use(auth);
 

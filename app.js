@@ -34,12 +34,19 @@ app.get("/crash-test", () => {
 });
 
 app.use(requestLogger);
-app.use("/", mainRouter);
+app.use("/api/wtwr", mainRouter);
 
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
+    message: statusCode === 500 ? "An internal server error occurred" : message,
+  });
+});
+
+app.listen(3001, () => {
+  console.log("Server running on port 3001");
 });

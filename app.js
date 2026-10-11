@@ -34,6 +34,8 @@ app.get("/crash-test", () => {
 });
 
 app.use(requestLogger);
+
+app.use("/", mainRouter);
 app.use("/api/wtwr", mainRouter);
 
 app.use(errorLogger);
